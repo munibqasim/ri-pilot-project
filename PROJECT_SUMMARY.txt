@@ -1,141 +1,193 @@
 ================================================================================
-RI PILOT PROJECT - RESTRUCTURED FOR MODULAR EXECUTION
+RI PILOT PROJECT - RESILIENT INFRASTRUCTURE EXTRACTION PIPELINE
 ================================================================================
 
 OVERVIEW:
-Your Jupyter notebook has been restructured into a clean, modular Python project
-that allows you to run each phase of the pipeline separately while preserving 
-100% of the original methodology.
-
-================================================================================
-FILE STRUCTURE:
-================================================================================
-
-CORE MODULES:
-  config.py                  - All configuration (keywords, queries, AWS)
-  models.py                  - Data classes (KeywordMatch, SemanticMatch, etc.)
-  keyword_search.py          - Phase 1: Keyword search logic
-  semantic_search.py         - Phase 2: Semantic search logic
-  deduplication.py           - Phase 3: Cross-store deduplication
-  bedrock_classifier.py      - Phase 4: AWS Bedrock classification
-
-EXECUTABLE SCRIPTS:
-  run_keyword_search.py      - Run Phase 1
-  run_semantic_search.py     - Run Phase 2
-  run_deduplication.py       - Run Phase 3
-  run_bedrock_classification.py - Run Phase 4
-  run_results_processing.py  - Run Phase 5 (final enrichment)
-
-DOCUMENTATION:
-  README.md                  - Complete documentation
-  QUICKSTART.md              - Quick start guide
-  PROJECT_SUMMARY.txt        - This file
-
-ORIGINAL:
-  ri_pilot_project.py        - Your original converted notebook (reference)
-
-================================================================================
-WHAT CHANGED:
-================================================================================
-
-STRUCTURE:
-  ✓ Split into logical modules (one per phase)
-  ✓ Separated configuration from logic
-  ✓ Created standalone executable scripts
-  ✓ Added proper error handling and user feedback
-
-METHODOLOGY:
-  ✓ NO CHANGES - All original algorithms preserved
-  ✓ Same keyword taxonomy and lemmatization
-  ✓ Same semantic search with sentence transformers
-  ✓ Same deduplication logic (50% overlap threshold)
-  ✓ Same Bedrock classification prompts
-  ✓ Same output formats
-
-IMPROVEMENTS:
-  ✓ Can run each phase independently
-  ✓ Clear progress tracking in console
-  ✓ Graceful error handling
-  ✓ Easy to customize (edit config.py)
-  ✓ Git-friendly (no cell markers)
+Multi-phase AI pipeline for extracting resilient infrastructure interventions 
+from World Bank Project Appraisal Documents (PADs). Uses keyword search, 
+semantic embeddings, deduplication, and Claude via AWS Bedrock.
 
 ================================================================================
 QUICK START:
 ================================================================================
 
-# 1. Run keyword search on your PAD files
-python run_keyword_search.py pad1.txt pad2.txt
+1. Install Dependencies:
+   pip install spacy nltk sentence-transformers torch boto3 --break-system-packages
+   python -m spacy download en_core_web_sm
+   python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
 
-# 2. Run semantic search on the same files
-python run_semantic_search.py pad1.txt pad2.txt
+2. Configure AWS Settings:
+   Edit config.py and update:
+   - s3_bucket: "your-bucket-name"
+   - s3_input_prefix and s3_output_prefix
+   - AWS credentials configured via 'aws configure'
 
-# 3. Deduplicate the results
-python run_deduplication.py
+3. Run the Pipeline:
+   python run_keyword_search.py your_pad1.txt your_pad2.txt
+   python run_semantic_search.py your_pad1.txt your_pad2.txt
+   python run_deduplication.py
+   python run_bedrock_classification.py
+   python run_results_processing.py
 
-# 4. Classify with Bedrock (requires AWS)
-python run_bedrock_classification.py
-
-# 5. Process final results
-python run_results_processing.py
-
-# Result: final_enriched_results_positive_only.json
+4. Get Results:
+   Open: final_enriched_results_positive_only.json
 
 ================================================================================
-OUTPUT FILES:
+WHAT THIS PIPELINE DOES:
 ================================================================================
 
-Phase 1: keyword_search_results.json
-Phase 2: semantic_search_results.json
-Phase 3: combined_deduplicated_results.json
-Phase 4: bedrock_classifications.json
-Phase 5: final_enriched_results.json
-         final_enriched_results_positive_only.json
+Phase 1: KEYWORD SEARCH
+  - Searches PAD documents for RI-related keywords
+  - Uses lemmatization to catch variations (flood, flooding, floods)
+  - Extracts context around matches (200-1000 characters)
+  - Output: keyword_search_results.json
+
+Phase 2: SEMANTIC SEARCH  
+  - Uses AI embeddings to find semantically similar content
+  - Searches with 8 sector-specific queries (energy, transport, water, etc.)
+  - Finds content that means "resilient infrastructure" without exact keywords
+  - Output: semantic_search_results.json
+
+Phase 3: DEDUPLICATION
+  - Combines results from both search methods
+  - Removes overlapping chunks (>50% overlap)
+  - Tracks which method found each chunk
+  - Output: combined_deduplicated_results.json
+
+Phase 4: BEDROCK CLASSIFICATION
+  - Sends chunks to Claude (AWS Bedrock) for classification
+  - Classifies as POSITIVE (real RI) or NEGATIVE (false positive)
+  - Provides confidence level and reasoning
+  - Output: bedrock_classifications.json
+
+Phase 5: RESULTS PROCESSING
+  - Enriches classifications with original chunk metadata
+  - Filters for positive RI interventions only
+  - Output: final_enriched_results.json & final_enriched_results_positive_only.json
 
 ================================================================================
 CUSTOMIZATION:
 ================================================================================
 
-To modify keywords:     Edit config.py → RI_KEYWORDS
-To modify queries:      Edit config.py → SEMANTIC_QUERIES
-To adjust parameters:   Edit config.py → SEARCH_PARAMS
-To change AWS settings: Edit config.py → AWS_CONFIG
+Add/Modify Keywords:
+  Edit config.py → RI_KEYWORDS dictionary
+  Organized by sector: energy, transport, water, ICT, etc.
+
+Add/Modify Semantic Queries:
+  Edit config.py → SEMANTIC_QUERIES list
+  8 pre-defined queries covering different RI aspects
+
+Adjust Parameters:
+  Edit config.py → SEARCH_PARAMS
+  - keyword_context_sentences: 3 (sentences before/after match)
+  - semantic_chunk_size: 500 (characters per chunk)
+  - dedup_overlap_threshold: 0.5 (50% overlap to merge)
+  - batch_size: 5 (chunks per Bedrock request)
+
+Change AWS Settings:
+  Edit config.py → AWS_CONFIG
+  - region, s3_bucket, model_id, etc.
 
 ================================================================================
-BENEFITS OF THIS STRUCTURE:
+OUTPUT FILES:
 ================================================================================
 
-1. DEVELOPMENT: Run/test individual phases without re-running everything
-2. DEBUGGING: Easier to isolate issues to specific phases
-3. COLLABORATION: Team members can work on different modules
-4. VERSION CONTROL: Clean git diffs, no notebook metadata noise
-5. DEPLOYMENT: Can deploy individual phases as separate services
-6. ITERATION: Modify one phase without affecting others
-7. TRANSPARENCY: Clear separation of concerns
+keyword_search_results.json          - Raw keyword matches from PADs
+semantic_search_results.json         - Raw semantic matches from PADs  
+combined_deduplicated_results.json   - Merged and deduplicated chunks
+bedrock_classifications.json         - Classification results from Claude
+final_enriched_results.json          - All chunks with classifications
+final_enriched_results_positive_only.json - Only positive RI interventions ⭐
+
+The last file is what you want - it contains only the confirmed resilient
+infrastructure interventions extracted from your PADs.
 
 ================================================================================
-NEXT STEPS:
+TYPICAL WORKFLOW:
 ================================================================================
 
-1. Review README.md for detailed documentation
-2. Edit config.py with your AWS credentials and file paths
-3. Run phases sequentially or test individual components
-4. Customize keywords/queries as needed for your use case
-5. Push to git repository for version control
+For a New Project:
+1. Place your PAD .txt files in a working directory
+2. Run Phase 1 & 2 on all PAD files
+3. Run Phase 3 to deduplicate
+4. Run Phase 4 to classify (requires AWS Bedrock access)
+5. Run Phase 5 to get final results
+6. Review final_enriched_results_positive_only.json
+
+For Iterating/Testing:
+- Test new keywords: Edit config.py, re-run Phase 1 only
+- Test new queries: Edit config.py, re-run Phase 2 only
+- Adjust deduplication: Edit config.py, re-run Phase 3 only
+- Review classifications: Just re-run Phase 5 with existing results
+
+For Adding More PADs:
+- Run Phase 1 & 2 on new PADs
+- Results append to existing JSON files
+- Re-run Phase 3-5 to include new PADs
 
 ================================================================================
-ORIGINAL METHODOLOGY PRESERVED:
+TROUBLESHOOTING:
 ================================================================================
 
-✓ Hierarchical RAG with keyword + semantic search
-✓ Lemmatization-based keyword matching
-✓ Sentence transformer embeddings (all-MiniLM-L6-v2)
-✓ Multi-phase batch processing pipeline
-✓ Claude Sonnet 4 via AWS Bedrock
-✓ Cross-store deduplication with overlap detection
-✓ Few-shot classification prompting
-✓ All the same parameters and thresholds
+"File not found: keyword_search_results.json"
+→ Run Phase 1 first: python run_keyword_search.py your_files.txt
 
-Nothing in the core methodology has changed - this is purely a structural
-improvement to make your workflow more flexible and maintainable.
+"Authentication failed for AWS"
+→ Configure AWS credentials: aws configure
+→ Ensure Bedrock access is enabled in your AWS account
+
+"ModuleNotFoundError: No module named 'spacy'"
+→ Install dependencies: pip install spacy --break-system-packages
+
+"No matches found"
+→ Check that your input files are plain text (.txt)
+→ Try expanding keywords in config.py
+
+"Bedrock batch job failed"
+→ Check S3 bucket permissions
+→ Verify IAM role: BedrockBatchInferenceRole exists
+→ Confirm Claude Sonnet 4 model access
+
+================================================================================
+REQUIREMENTS:
+================================================================================
+
+Python Dependencies:
+- spacy (NLP processing)
+- nltk (text processing)
+- sentence-transformers (semantic search)
+- torch (ML backend)
+- boto3 (AWS SDK)
+
+AWS Requirements:
+- AWS account with Bedrock access
+- S3 bucket for batch processing
+- IAM role: BedrockBatchInferenceRole
+- Claude Sonnet 4 model access
+
+Input Format:
+- Plain text files (.txt)
+- UTF-8 encoding
+- PAD documents from World Bank projects
+
+================================================================================
+DOCUMENTATION:
+================================================================================
+
+README.md       - Complete technical documentation
+QUICKSTART.md   - Condensed getting started guide  
+This file       - Overview and usage guide
+
+================================================================================
+SUPPORT:
+================================================================================
+
+For questions about:
+- Methodology: See README.md technical details
+- Quick setup: See QUICKSTART.md
+- AWS/Bedrock: Check AWS documentation
+- Code issues: Review module docstrings in .py files
+
+Repository: https://github.com/munibqasim/ri-pilot-project
 
 ================================================================================
