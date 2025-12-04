@@ -1,0 +1,12 @@
+# Results files
+keyword_search_results.json
+semantic_search_results.json
+combined_deduplicated_results.json
+bedrock_classifications.json
+final_enriched_results.json
+final_enriched_results_positive_only.json
+bedrock_results/
+__pycache__/
+*.pyc
+.DS_Store
+venv/

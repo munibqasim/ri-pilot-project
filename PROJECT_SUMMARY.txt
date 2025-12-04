@@ -1,0 +1,141 @@
+================================================================================
+RI PILOT PROJECT - RESTRUCTURED FOR MODULAR EXECUTION
+================================================================================
+
+OVERVIEW:
+Your Jupyter notebook has been restructured into a clean, modular Python project
+that allows you to run each phase of the pipeline separately while preserving 
+100% of the original methodology.
+
+================================================================================
+FILE STRUCTURE:
+================================================================================
+
+CORE MODULES:
+  config.py                  - All configuration (keywords, queries, AWS)
+  models.py                  - Data classes (KeywordMatch, SemanticMatch, etc.)
+  keyword_search.py          - Phase 1: Keyword search logic
+  semantic_search.py         - Phase 2: Semantic search logic
+  deduplication.py           - Phase 3: Cross-store deduplication
+  bedrock_classifier.py      - Phase 4: AWS Bedrock classification
+
+EXECUTABLE SCRIPTS:
+  run_keyword_search.py      - Run Phase 1
+  run_semantic_search.py     - Run Phase 2
+  run_deduplication.py       - Run Phase 3
+  run_bedrock_classification.py - Run Phase 4
+  run_results_processing.py  - Run Phase 5 (final enrichment)
+
+DOCUMENTATION:
+  README.md                  - Complete documentation
+  QUICKSTART.md              - Quick start guide
+  PROJECT_SUMMARY.txt        - This file
+
+ORIGINAL:
+  ri_pilot_project.py        - Your original converted notebook (reference)
+
+================================================================================
+WHAT CHANGED:
+================================================================================
+
+STRUCTURE:
+  ✓ Split into logical modules (one per phase)
+  ✓ Separated configuration from logic
+  ✓ Created standalone executable scripts
+  ✓ Added proper error handling and user feedback
+
+METHODOLOGY:
+  ✓ NO CHANGES - All original algorithms preserved
+  ✓ Same keyword taxonomy and lemmatization
+  ✓ Same semantic search with sentence transformers
+  ✓ Same deduplication logic (50% overlap threshold)
+  ✓ Same Bedrock classification prompts
+  ✓ Same output formats
+
+IMPROVEMENTS:
+  ✓ Can run each phase independently
+  ✓ Clear progress tracking in console
+  ✓ Graceful error handling
+  ✓ Easy to customize (edit config.py)
+  ✓ Git-friendly (no cell markers)
+
+================================================================================
+QUICK START:
+================================================================================
+
+# 1. Run keyword search on your PAD files
+python run_keyword_search.py pad1.txt pad2.txt
+
+# 2. Run semantic search on the same files
+python run_semantic_search.py pad1.txt pad2.txt
+
+# 3. Deduplicate the results
+python run_deduplication.py
+
+# 4. Classify with Bedrock (requires AWS)
+python run_bedrock_classification.py
+
+# 5. Process final results
+python run_results_processing.py
+
+# Result: final_enriched_results_positive_only.json
+
+================================================================================
+OUTPUT FILES:
+================================================================================
+
+Phase 1: keyword_search_results.json
+Phase 2: semantic_search_results.json
+Phase 3: combined_deduplicated_results.json
+Phase 4: bedrock_classifications.json
+Phase 5: final_enriched_results.json
+         final_enriched_results_positive_only.json
+
+================================================================================
+CUSTOMIZATION:
+================================================================================
+
+To modify keywords:     Edit config.py → RI_KEYWORDS
+To modify queries:      Edit config.py → SEMANTIC_QUERIES
+To adjust parameters:   Edit config.py → SEARCH_PARAMS
+To change AWS settings: Edit config.py → AWS_CONFIG
+
+================================================================================
+BENEFITS OF THIS STRUCTURE:
+================================================================================
+
+1. DEVELOPMENT: Run/test individual phases without re-running everything
+2. DEBUGGING: Easier to isolate issues to specific phases
+3. COLLABORATION: Team members can work on different modules
+4. VERSION CONTROL: Clean git diffs, no notebook metadata noise
+5. DEPLOYMENT: Can deploy individual phases as separate services
+6. ITERATION: Modify one phase without affecting others
+7. TRANSPARENCY: Clear separation of concerns
+
+================================================================================
+NEXT STEPS:
+================================================================================
+
+1. Review README.md for detailed documentation
+2. Edit config.py with your AWS credentials and file paths
+3. Run phases sequentially or test individual components
+4. Customize keywords/queries as needed for your use case
+5. Push to git repository for version control
+
+================================================================================
+ORIGINAL METHODOLOGY PRESERVED:
+================================================================================
+
+✓ Hierarchical RAG with keyword + semantic search
+✓ Lemmatization-based keyword matching
+✓ Sentence transformer embeddings (all-MiniLM-L6-v2)
+✓ Multi-phase batch processing pipeline
+✓ Claude Sonnet 4 via AWS Bedrock
+✓ Cross-store deduplication with overlap detection
+✓ Few-shot classification prompting
+✓ All the same parameters and thresholds
+
+Nothing in the core methodology has changed - this is purely a structural
+improvement to make your workflow more flexible and maintainable.
+
+================================================================================
