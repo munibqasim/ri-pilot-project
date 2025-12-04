@@ -48,6 +48,9 @@ python run_bedrock_classification.py
 
 # Phase 5: Results Processing
 python run_results_processing.py
+
+# Phase 6: Activity Classification (optional)
+python run_activity_classification.py
 ```
 
 ### Option 2: Run Individual Phases
@@ -81,6 +84,7 @@ After running all phases, you'll have:
 4. `bedrock_classifications.json` - Classification results
 5. `final_enriched_results.json` - Complete results
 6. `final_enriched_results_positive_only.json` - Positive RI interventions only
+7. `final_ri_classifications.json` - Positive interventions with activity categories
 
 ## Typical Workflow
 

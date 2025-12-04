@@ -13,12 +13,14 @@ Multi-phase AI pipeline for extracting resilient infrastructure interventions fr
 ├── semantic_search.py                 # Phase 2: Semantic search module  
 ├── deduplication.py                   # Phase 3: Cross-store deduplication module
 ├── bedrock_classifier.py              # Phase 4: AWS Bedrock batch classification
+├── activity_classifier.py             # Phase 6: Activity type classification (8 categories)
 │
 ├── run_keyword_search.py              # ► Run Phase 1
 ├── run_semantic_search.py             # ► Run Phase 2
 ├── run_deduplication.py               # ► Run Phase 3
 ├── run_bedrock_classification.py      # ► Run Phase 4
-└── run_results_processing.py          # ► Run Phase 5 (Final enrichment)
+├── run_results_processing.py          # ► Run Phase 5 (Final enrichment)
+└── run_activity_classification.py     # ► Run Phase 6 (Activity classification)
 ```
 
 ## Pipeline Overview
@@ -51,6 +53,12 @@ Multi-phase AI pipeline for extracting resilient infrastructure interventions fr
 - Enriches classifications with original chunk data
 - Filters positive results
 - **Output**: `final_enriched_results.json` & `final_enriched_results_positive_only.json`
+
+### Phase 6: Activity Classification
+- Classifies positive RI excerpts into 8 activity categories
+- Categories: Engineering Design, Asset Management, Contingency Planning, etc.
+- Optional deduplication based on text similarity
+- **Output**: `final_ri_classifications.json`
 
 ## Setup
 
@@ -114,6 +122,9 @@ python run_bedrock_classification.py
 
 # Phase 5: Results Processing
 python run_results_processing.py
+
+# Phase 6: Activity Classification (optional)
+python run_activity_classification.py
 ```
 
 ### Run Individual Phases
@@ -190,6 +201,7 @@ All output files are saved to the working directory:
 - `bedrock_classifications.json` - Classification results from Bedrock
 - `final_enriched_results.json` - All results with classifications
 - `final_enriched_results_positive_only.json` - Filtered positive interventions
+- `final_ri_classifications.json` - Positive interventions with activity types (8 categories)
 
 ## AWS Bedrock Requirements
 

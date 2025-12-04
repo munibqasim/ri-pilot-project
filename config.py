@@ -242,7 +242,9 @@ FILE_PATHS = {
     "combined_results": "combined_deduplicated_results.json",
     "bedrock_input": "bedrock_batch_input.jsonl",
     "bedrock_classifications": "bedrock_classifications.json",
-    "final_results": "final_enriched_results.json"
+    "final_results": "final_enriched_results.json",
+    "final_results_positive": "final_enriched_results_positive_only.json",
+    "activity_classifications": "final_ri_classifications.json"
 }
 
 # Search Parameters

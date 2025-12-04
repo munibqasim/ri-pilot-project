@@ -28,9 +28,10 @@ QUICK START:
    python run_deduplication.py
    python run_bedrock_classification.py
    python run_results_processing.py
+   python run_activity_classification.py
 
 4. Get Results:
-   Open: final_enriched_results_positive_only.json
+   Open: final_ri_classifications.json
 
 ================================================================================
 WHAT THIS PIPELINE DOES:
@@ -65,6 +66,12 @@ Phase 5: RESULTS PROCESSING
   - Filters for positive RI interventions only
   - Output: final_enriched_results.json & final_enriched_results_positive_only.json
 
+Phase 6: ACTIVITY CLASSIFICATION
+  - Classifies positive RI excerpts into 8 activity categories
+  - Engineering Design, Asset Management, Contingency Planning, etc.
+  - Optional deduplication based on text similarity (85-90% threshold)
+  - Output: final_ri_classifications.json
+
 ================================================================================
 CUSTOMIZATION:
 ================================================================================
@@ -97,10 +104,11 @@ semantic_search_results.json         - Raw semantic matches from PADs
 combined_deduplicated_results.json   - Merged and deduplicated chunks
 bedrock_classifications.json         - Classification results from Claude
 final_enriched_results.json          - All chunks with classifications
-final_enriched_results_positive_only.json - Only positive RI interventions ⭐
+final_enriched_results_positive_only.json - Only positive RI interventions
+final_ri_classifications.json        - Positive interventions with activity types ⭐
 
-The last file is what you want - it contains only the confirmed resilient
-infrastructure interventions extracted from your PADs.
+The last file is what you want - it contains the confirmed resilient
+infrastructure interventions categorized by activity type.
 
 ================================================================================
 TYPICAL WORKFLOW:
